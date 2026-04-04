@@ -32,5 +32,13 @@ public class BasketController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(basketService.createBasket(basketRequest));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateBasket(@PathVariable String id, @RequestBody BasketRequest basketRequest){
+            return basketService.updateBasket(id, basketRequest)
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+
+    }
 }
 

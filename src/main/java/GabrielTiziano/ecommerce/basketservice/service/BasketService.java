@@ -20,11 +20,11 @@ public class BasketService {
     private final BasketRepository basketRepository;
     private final ProductService productService;
 
-    public Optional<Basket> getBasketById(String id){
+    public Optional<Basket> getBasketById(String id) {
         return basketRepository.findById(id);
     }
 
-    public Basket createBasket(BasketRequest basketRequest){
+    public Basket createBasket(BasketRequest basketRequest) {
 
         basketRepository.findByClientAndStatus(basketRequest.clientId(), Status.OPEN)
                 .ifPresent(basket -> {
@@ -57,4 +57,38 @@ public class BasketService {
         return basketRepository.save(basket);
     }
 
+    public Optional<?> updateBasket(String id, BasketRequest basketRequest) {
+        Optional<Basket> basketFound = getBasketById(id);
+
+        if (basketFound.isPresent()) {
+
+            List<Product> productList = new ArrayList<>();
+
+            basketRequest.products().forEach(productRequest -> {
+                PlatziProductResponse platziProductResponse = productService.getProductById(
+                        productRequest.id()
+                );
+
+                productList.add(Product.builder()
+                        .id(String.valueOf(platziProductResponse.id()))
+                        .title(platziProductResponse.title())
+                        .price(platziProductResponse.price())
+                        .quantity(productRequest.quantity())
+                        .build());
+            });
+
+            Basket newBasket = basketFound.get();
+
+            newBasket.setClient(basketRequest.clientId());
+            newBasket.setProducts(productList);
+            newBasket.setStatus(Status.OPEN);
+
+            newBasket.calculateTotalPrice();
+
+            return Optional.of(basketRepository.save(newBasket));
+
+        } else {
+            return Optional.empty();
+        }
+    }
 }
