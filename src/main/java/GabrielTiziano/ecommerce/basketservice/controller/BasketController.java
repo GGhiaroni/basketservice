@@ -21,7 +21,7 @@ public class BasketController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getBasketById(@PathVariable String id) {
         Optional<Basket> basket = basketService.getBasketById(id);
-        if(basket.isPresent()){
+        if (basket.isPresent()) {
             return ResponseEntity.ok(basket);
         } else {
             return ResponseEntity.notFound().build();
@@ -29,24 +29,30 @@ public class BasketController {
     }
 
     @PostMapping
-    public ResponseEntity<Basket> createBasket(@RequestBody BasketRequest basketRequest){
+    public ResponseEntity<Basket> createBasket(@RequestBody BasketRequest basketRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(basketService.createBasket(basketRequest));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateBasket(@PathVariable String id, @RequestBody BasketRequest basketRequest){
-            return basketService.updateBasket(id, basketRequest)
-                    .map(ResponseEntity::ok)
-                    .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> updateBasket(@PathVariable String id, @RequestBody BasketRequest basketRequest) {
+        return basketService.updateBasket(id, basketRequest)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
 
     }
 
     @PutMapping("/{id}/payment")
-    public ResponseEntity<?> payBasket(@PathVariable String id, @RequestBody PaymentRequest paymentRequest){
+    public ResponseEntity<?> payBasket(@PathVariable String id, @RequestBody PaymentRequest paymentRequest) {
         return basketService.payBasket(id, paymentRequest)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBasket(@PathVariable String id) {
+        basketService.deleteBasket(id);
+        return ResponseEntity.noContent().build();
     }
 }
 

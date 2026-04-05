@@ -105,4 +105,14 @@ public class BasketService {
             return Optional.empty();
         }
     }
+
+    public void deleteBasket(String id){
+        Optional<Basket> basketFound = getBasketById(id);
+
+        if(basketFound.isPresent()){
+           basketRepository.deleteById(id);
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
 }
