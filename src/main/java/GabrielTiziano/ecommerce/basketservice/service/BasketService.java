@@ -5,6 +5,7 @@ import GabrielTiziano.ecommerce.basketservice.entity.Product;
 import GabrielTiziano.ecommerce.basketservice.entity.Status;
 import GabrielTiziano.ecommerce.basketservice.repository.BasketRepository;
 import GabrielTiziano.ecommerce.basketservice.request.BasketRequest;
+import GabrielTiziano.ecommerce.basketservice.request.PaymentRequest;
 import GabrielTiziano.ecommerce.basketservice.response.PlatziProductResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -87,6 +88,19 @@ public class BasketService {
 
             return Optional.of(basketRepository.save(newBasket));
 
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Basket> payBasket(String id, PaymentRequest paymentRequest){
+        Optional<Basket> basketFound = getBasketById(id);
+
+        if(basketFound.isPresent()){
+            Basket basketUpdated = basketFound.get();
+            basketUpdated.setPaymentMethod(paymentRequest.paymentMethod());
+            basketUpdated.setStatus(Status.SOLD);
+            return Optional.of(basketRepository.save(basketUpdated));
         } else {
             return Optional.empty();
         }

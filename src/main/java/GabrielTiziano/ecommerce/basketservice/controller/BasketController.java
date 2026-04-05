@@ -2,6 +2,7 @@ package GabrielTiziano.ecommerce.basketservice.controller;
 
 import GabrielTiziano.ecommerce.basketservice.entity.Basket;
 import GabrielTiziano.ecommerce.basketservice.request.BasketRequest;
+import GabrielTiziano.ecommerce.basketservice.request.PaymentRequest;
 import GabrielTiziano.ecommerce.basketservice.service.BasketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,13 @@ public class BasketController {
                     .map(ResponseEntity::ok)
                     .orElse(ResponseEntity.notFound().build());
 
+    }
+
+    @PutMapping("/{id}/payment")
+    public ResponseEntity<?> payBasket(@PathVariable String id, @RequestBody PaymentRequest paymentRequest){
+        return basketService.payBasket(id, paymentRequest)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
 
