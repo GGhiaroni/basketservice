@@ -42,4 +42,5 @@ public class Basket {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    private PaymentMethod paymentMethod;
 }
