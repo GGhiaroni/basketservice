@@ -1,6 +1,7 @@
 package GabrielTiziano.ecommerce.basketservice.controller;
 
 import GabrielTiziano.ecommerce.basketservice.entity.Basket;
+import GabrielTiziano.ecommerce.basketservice.exceptions.DataNotFoundException;
 import GabrielTiziano.ecommerce.basketservice.request.BasketRequest;
 import GabrielTiziano.ecommerce.basketservice.request.PaymentRequest;
 import GabrielTiziano.ecommerce.basketservice.service.BasketService;
@@ -19,13 +20,8 @@ public class BasketController {
     private final BasketService basketService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getBasketById(@PathVariable String id) {
-        Optional<Basket> basket = basketService.getBasketById(id);
-        if (basket.isPresent()) {
-            return ResponseEntity.ok(basket);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Basket> getBasketById(@PathVariable String id) {
+        return ResponseEntity.ok(basketService.getBasketById(id));
     }
 
     @PostMapping
@@ -35,18 +31,13 @@ public class BasketController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateBasket(@PathVariable String id, @RequestBody BasketRequest basketRequest) {
-        return basketService.updateBasket(id, basketRequest)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-
+    public ResponseEntity<Basket> updateBasket(@PathVariable String id, @RequestBody BasketRequest basketRequest) {
+        return ResponseEntity.ok(basketService.updateBasket(id, basketRequest));
     }
 
     @PutMapping("/{id}/payment")
     public ResponseEntity<?> payBasket(@PathVariable String id, @RequestBody PaymentRequest paymentRequest) {
-        return basketService.payBasket(id, paymentRequest)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(basketService.payBasket(id, paymentRequest));
     }
 
     @DeleteMapping("/{id}")
